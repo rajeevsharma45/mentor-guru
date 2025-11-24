@@ -3,7 +3,7 @@
 // --------------------
 // Types
 // --------------------
-export type NavSubLink = { href: string; label: string };
+export type NavSubLink = { href: string; label: string }; 
 export type NavLink = {
   href: string;
   key: string;
@@ -20,9 +20,18 @@ export const NAV_LINKS: NavLink[] = [
     key: "courses",
     label: "Explore Courses",
     subLinks: [
-      { href: "/courses/web-development", label: "Web Development" },
-      { href: "/courses/mobile-repair", label: "Mobile Repair" },
-      { href: "/courses/ai-ml", label: "AI & LLMs" },
+      { href: "/courses/moksha-plus-2026", label: "Moksha Plus-2026" },
+      { href: "/courses/moksha-plus-2027", label: "Moksha Plus-2027" },
+      { href: "/courses/anthropology-beginner-2026", label: "Anthropology Beginner 2026" },
+      { href: "/courses/anthropology-advance-2026", label: "Anthropology Advance 2026" },
+      { href: "/courses/prelims-nirvana-2026", label: "Prelims Nirvana-2026" },
+      { href: "/courses/pyq", label: "PYQ-Based Mains Revision Course" },
+      { href: "/courses/psir-plus-2026", label: "PSIR Plus-2026" },
+      { href: "/courses/sociology-plus-2026", label: "Sociology Plus-2026" },
+      { href: "/courses/mains-warrior", label: "Mains-Warrior" },
+      { href: "/courses/samarth-answer-writing-2026", label: "Samarth Answer Writing 2026" },
+      { href: "/courses/prelims-kaushal-2026", label: "Prelims Kaushal 2026" },
+      { href: "/courses/anthropology-crash-course", label: "Anthropology Mains Crash Course" },
     ],
   },
   { href: "/blogs", key: "blogs", label: "Blogs" },

@@ -81,6 +81,33 @@ const BlogMainPage: FC = () => {
         {/* Main Content */}
         {/* -------------------- */}
         <main className="lg:col-span-2 space-y-8">
+
+          {/* Categories Section */}
+<section>
+  <h2 className="text-lg font-semibold mb-4 border-l-4 border-primary pl-2">
+    Categories
+  </h2>
+
+  <div className="flex flex-wrap gap-3">
+    {[
+      { name: "Prelims", slug: "prelims" },
+      { name: "Mains", slug: "mains" },
+      { name: "Interview", slug: "interview" },
+      { name: "Optional", slug: "optional" },
+      { name: "General Question", slug: "general-questions" },
+      { name: "Current Affairs", slug: "current-affairs" },
+    ].map((cat, idx) => (
+      <button
+        key={idx}
+        onClick={() => router.push(`/blog/category/${cat.slug}`)}
+        className="px-4 py-2 rounded-md border border-gray-300 text-sm font-medium bg-white hover:bg-primary hover:text-white transition"
+      >
+        {cat.name}
+      </button>
+    ))}
+  </div>
+</section>
+
           {/* Featured Blog */}
           {featured ? (
             <div
@@ -166,15 +193,28 @@ const BlogMainPage: FC = () => {
               />
 
               <select className="w-full border px-3 py-2 rounded-md">
-                <option value="">Select Class</option>
-                <option value="Class 10">Class 10</option>
-                <option value="Class 12">Class 12</option>
+                <option value="">No. of Attempts</option>
+                <option value="Class 10">0</option>
+                <option value="Class 12">1</option>
+                <option value="Class 12">2</option>
+                <option value="Class 12">3</option>
               </select>
 
               <select className="w-full border px-3 py-2 rounded-md">
                 <option value="">Select Course</option>
-                <option value="NEET">NEET</option>
-                <option value="JEE">JEE</option>
+                <option value="NEET">Moksha Plus-2026</option>
+                <option value="JEE">Moksha Plus-2027</option>
+                <option value="JEE">Anthropology Beginner 2026</option>
+                <option value="JEE">Anthropology Advance 2026</option>
+                <option value="JEE">Prelims Nirvana-2026</option>
+                <option value="JEE">PYQ-Based Mains Revision Course</option>
+                <option value="JEE">PSIR Plus-2026</option>
+                <option value="JEE">Sociology Plus-2026</option>
+                <option value="JEE">Geography Plus-2026</option>
+                <option value="JEE">Mains-Warrior</option>
+                <option value="JEE">Samarth Answer Writing 2026</option>
+                <option value="JEE">Prelims Kaushal 2026</option>
+                <option value="JEE">Anthropology Mains Crash Course</option>
               </select>
 
               <button
