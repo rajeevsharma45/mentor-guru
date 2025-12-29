@@ -1,15 +1,14 @@
-import EdTechCompanies from "../../blogs/EdTechCompanies";
+import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
 
-const blogComponents = {
-  "edtech-companies": EdTechCompanies,
-} as const;
+// Slug → component mapping (UNCHANGED)
+const blogComponents: Record<string, ComponentType> = {
+  "edtech-companies": dynamic(() => import("../../blogs/EdTechCompanies")),
+};
 
-export default function BlogPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const BlogComponent = blogComponents[params.slug as keyof typeof blogComponents];
+export default async function BlogPage({ params }: any) {
+  const { slug } = params;
+  const BlogComponent = blogComponents[slug];
 
   if (!BlogComponent) {
     return (
