@@ -47,4 +47,22 @@ const interviewBlogs = blogs.filter((b) => b.category === 'interview');
 
 const InterviewPage: FC = () => {
     const router = useRouter();
+    return (
+        <div>
+            {interviewBlogs.length === 0 ? (
+                <p>No interview blogs found.</p>
+            ) : (
+                <ul>
+                    {interviewBlogs.map((b) => (
+                        <li key={b.id}>
+                            <h2>{b.title}</h2>
+                            <p>{b.excerpt}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
 }
+
+export default InterviewPage;
