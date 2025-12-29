@@ -1,29 +1,31 @@
-import dynamic from "next/dynamic";
+// src/app/blog/page.tsx (the main blog listing page)
 
-interface BlogPageProps {
-  params: { slug: string };
-}
+import Link from "next/link";
 
-// ✅ Map each slug to its corresponding blog component file
-const blogComponents: Record<string, React.ComponentType> = {
-  "edtech-companies": dynamic(() => import("../blogs/EdTechCompanies")),
-  // Add more blogs here later:
-  // "jee-preparation-2026": dynamic(() => import("../../blogs/JeePreparation")),
-  // "neet-chemistry-notes-2026": dynamic(() => import("../../blogs/NeetChemistryNotes")),
-};
+export default function BlogListingPage() {
+  const blogPosts = [
+    {
+      slug: "edtech-companies",
+      title: "Top EdTech Companies",
+      description: "Explore the leading educational technology companies.",
+    },
+  ];
 
-export default function BlogPage({ params }: BlogPageProps) {
-  const { slug } = params;
-  const BlogComponent = blogComponents[slug];
-
-  if (!BlogComponent) {
-    return (
-      <div className="max-container py-20 text-center text-gray-600">
-        <h1 className="text-2xl font-bold mb-4">404 - Blog Not Found</h1>
-        <p>The article you’re looking for doesn’t exist or is coming soon.</p>
+  return (
+    <div className="max-w-7xl mx-auto py-20 px-4">
+      <h1 className="text-4xl font-bold mb-8">Blog</h1>
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {blogPosts.map((post) => (
+          <Link
+            key={post.slug}
+            href={`/blog/${post.slug}`}
+            className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
+          >
+            <h2 className="text-2xl font-semibold mb-2">{post.title}</h2>
+            <p className="text-gray-600">{post.description}</p>
+          </Link>
+        ))}
       </div>
-    );
-  }
-
-  return <BlogComponent />;
+    </div>
+  );
 }
