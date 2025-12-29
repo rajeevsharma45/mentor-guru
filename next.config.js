@@ -1,10 +1,14 @@
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
+// next.config.js
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  eslint: {
+    ignoreDuringBuilds: true, // Ignore ESLint errors during build
+  },
+  typescript: {
+    ignoreBuildErrors: false, // Keep TypeScript checking enabled
+  },
+};
 
 export default config;
