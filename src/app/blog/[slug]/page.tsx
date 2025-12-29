@@ -6,12 +6,12 @@ const blogComponents: Record<string, ComponentType> = {
   "edtech-companies": dynamic(() => import("../../blogs/EdTechCompanies")),
 };
 
-export default function BlogPage({
+export default async function BlogPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
   const BlogComponent = blogComponents[slug];
 
   if (!BlogComponent) {
