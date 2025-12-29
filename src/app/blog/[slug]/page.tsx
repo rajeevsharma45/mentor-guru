@@ -1,15 +1,16 @@
 import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
 
-interface BlogPageProps {
-  params: { slug: string };
-}
-
-// ✅ Map slug values to the corresponding components
-const blogComponents: Record<string, React.ComponentType> = {
+// Map slug values to components
+const blogComponents: Record<string, ComponentType> = {
   "edtech-companies": dynamic(() => import("../../blogs/EdTechCompanies")),
 };
 
-export default function BlogPage({ params }: BlogPageProps) {
+export default function BlogPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
   const BlogComponent = blogComponents[slug];
 
