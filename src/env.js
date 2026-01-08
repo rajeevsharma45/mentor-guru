@@ -3,17 +3,28 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    DATABASE_URL: z.string().url(),
+    // Allow PostgreSQL + Neon URLs
+    DATABASE_URL: z
+      .string()
+      .min(1, "DATABASE_URL is required")
+      .refine(
+        (v) =>
+          v.startsWith("postgres://") ||
+          v.startsWith("postgresql://"),
+        "Invalid DATABASE_URL: must be postgres or postgresql"
+      ),
 
     NEXTAUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string()
         : z.string().optional(),
 
+    // NEXTAUTH_URL must match callback domain
     NEXTAUTH_URL: z.string().url(),
 
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
+    // Google Auth keys required
+    GOOGLE_CLIENT_ID: z.string().min(1),
+    GOOGLE_CLIENT_SECRET: z.string().min(1),
 
     NODE_ENV: z
       .enum(["development", "test", "production"])
