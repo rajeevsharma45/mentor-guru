@@ -3,32 +3,8 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "~/server/db";
 
-// Ensure process.env is used directly
-const googleClientId = process.env.GOOGLE_CLIENT_ID;
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-
-if (!googleClientId || !googleClientSecret) {
-  console.warn("Google provider not configured: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET");
-}
-
-const providers = [];
-if (googleClientId && googleClientSecret) {
-  providers.push(
-    GoogleProvider({
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
-    })
-  );
-}
-
-// Add logging to verify environment variables
-console.log("Environment Variables:", {
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  DATABASE_URL: process.env.DATABASE_URL,
-});
+if (!process.env.GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID");
+if (!process.env.GOOGLE_CLIENT_SECRET) throw new Error("Missing GOOGLE_CLIENT_SECRET");
 
 declare module "next-auth" {
   interface Session {
@@ -51,7 +27,12 @@ export const authConfig = {
     strategy: "jwt",
   },
 
-  providers,
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
 
   callbacks: {
     async session({ session, token }) {
