@@ -1,20 +1,26 @@
-// src/server/auth/config.ts
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
 import { db } from "~/server/db";
 
-// Validate required environment variables
-if (!process.env.GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID in environment variables");
-if (!process.env.GOOGLE_CLIENT_SECRET) throw new Error("Missing GOOGLE_CLIENT_SECRET in environment variables");
-if (!process.env.FACEBOOK_CLIENT_ID) throw new Error("Missing FACEBOOK_CLIENT_ID in environment variables");
-if (!process.env.FACEBOOK_CLIENT_SECRET) throw new Error("Missing FACEBOOK_CLIENT_SECRET in environment variables");
+// Ensure process.env is used directly
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
-/**
- * Module augmentation for `next-auth` types.
- * Allows us to add custom properties to the session object and keep type safety.
- */
+if (!googleClientId || !googleClientSecret) {
+  console.warn("Google provider not configured: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET");
+}
+
+const providers = [];
+if (googleClientId && googleClientSecret) {
+  providers.push(
+    GoogleProvider({
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
+    })
+  );
+}
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -29,38 +35,23 @@ declare module "next-auth" {
   }
 }
 
-/**
- * NextAuth configuration
- */
 export const authConfig = {
   adapter: PrismaAdapter(db),
 
-  // JWT-based sessions are fine for scaling
   session: {
     strategy: "jwt",
   },
 
-  providers: [
-    GoogleProvider({
-      // Remove unnecessary type assertions - already validated above
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-
-    FacebookProvider({
-      // Remove unnecessary type assertions - already validated above
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    }),
-  ],
+  providers,
 
   callbacks: {
     async session({ session, token }) {
-      // Attach user ID from token to session
-      if (session.user) {
-        session.user.id = token.sub ?? "";
-      }
+      if (session.user) session.user.id = token.sub ?? "";
       return session;
+    },
+
+    redirect() {
+      return "/";
     },
   },
 } satisfies NextAuthConfig;
