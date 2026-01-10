@@ -1,5 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "~/server/db";
 
@@ -11,12 +12,6 @@ declare module "next-auth" {
     user: {
       id: string;
     } & DefaultSession["user"];
-  }
-}
-
-declare module "next-auth" {
-  interface JWT {
-    sub?: string;
   }
 }
 
@@ -45,3 +40,6 @@ export const authConfig = {
     },
   },
 } satisfies NextAuthConfig;
+
+// ✅ Export NextAuth instance with handlers
+export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
