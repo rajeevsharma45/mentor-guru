@@ -1,15 +1,11 @@
 import NextAuth from "next-auth";
-import { cache } from "react";
 
 import { authConfig } from "./config";
 
-const { auth: uncachedAuth, handlers, signIn, signOut } = NextAuth(authConfig);
+// Initialize NextAuth without caching for now (to see if that's the issue)
+const nextAuth = NextAuth(authConfig);
 
-// Cache the auth function for React Server Components
-const auth = cache(uncachedAuth);
+export const { auth, handlers, signIn, signOut } = nextAuth;
 
-// Re-export everything
-export { auth, handlers, signIn, signOut };
-
-// Also export authConfig in case needed elsewhere
+// Also export authConfig
 export { authConfig } from "./config";

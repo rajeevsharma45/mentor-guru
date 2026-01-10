@@ -1,5 +1,7 @@
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+// import { PrismaAdapter } from "@auth/prisma-adapter";  // Comment out
+// import { db } from "~/server/db";  // Comment out
 
 declare module "next-auth" {
   interface Session {
@@ -10,7 +12,7 @@ declare module "next-auth" {
 }
 
 export const authConfig = {
-  // Temporarily comment out adapter to test
+  // Comment out adapter temporarily
   // adapter: PrismaAdapter(db),
 
   session: {
