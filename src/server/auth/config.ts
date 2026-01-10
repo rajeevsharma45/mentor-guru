@@ -1,7 +1,11 @@
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-// import { PrismaAdapter } from "@auth/prisma-adapter";  // Comment out
-// import { db } from "~/server/db";  // Comment out
+import { db } from "~/server/db";
+
+if (!process.env.GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID");
+if (!process.env.GOOGLE_CLIENT_SECRET) throw new Error("Missing GOOGLE_CLIENT_SECRET");
 
 declare module "next-auth" {
   interface Session {
@@ -12,13 +16,15 @@ declare module "next-auth" {
 }
 
 export const authConfig = {
-  // Comment out adapter temporarily
-  // adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db),
+  
+  // 🔥 CRITICAL: Required for Netlify/proxy deployment
+  trustHost: true,
 
   session: {
     strategy: "jwt",
   },
-
+    
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -37,3 +43,6 @@ export const authConfig = {
     },
   },
 } satisfies NextAuthConfig;
+
+// ✅ Export NextAuth instance with handlers
+export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
