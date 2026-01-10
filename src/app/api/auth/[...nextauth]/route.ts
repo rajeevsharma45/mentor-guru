@@ -3,25 +3,34 @@ export const dynamic = "force-dynamic";
 
 import { handlers } from "~/server/auth";
 
-// Wrapper function for better error logging
 const wrap = (fn: typeof handlers.GET | typeof handlers.POST, name: string) => {
   return async (req: Request) => {
     try {
-      console.debug(`[NextAuth] ${name} request:`, {
-        method: req.method,
-        url: req.url,
-        hasCookie: !!req.headers.get("cookie"),
-        contentType: req.headers.get("content-type") ?? null,
+      console.log(`[NextAuth ${name}] Starting...`);
+      console.log(`[NextAuth ${name}] URL:`, req.url);
+      console.log(`[NextAuth ${name}] Method:`, req.method);
+      
+      const response = await fn(req as any);
+      
+      console.log(`[NextAuth ${name}] Success - Status:`, response.status);
+      return response;
+      
+    } catch (err: any) {
+      console.error(`[NextAuth ${name}] FATAL ERROR:`, {
+        message: err?.message,
+        name: err?.name,
+        code: err?.code,
+        stack: err?.stack,
       });
 
-      return await fn(req as any);
-    } catch (err: any) {
-      console.error(`[NextAuth] ${name} handler error:`, err?.stack ?? err);
-
+      // Return the actual error to the client for debugging
       return new Response(
         JSON.stringify({
           message: "NextAuth handler error",
           error: err?.message ?? String(err),
+          name: err?.name,
+          code: err?.code,
+          stack: err?.stack?.split('\n').slice(0, 10), // First 10 lines
         }),
         {
           status: 500,
@@ -32,6 +41,5 @@ const wrap = (fn: typeof handlers.GET | typeof handlers.POST, name: string) => {
   };
 };
 
-// Export wrapped handlers (remove the duplicate destructuring)
 export const GET = wrap(handlers.GET, "GET");
 export const POST = wrap(handlers.POST, "POST");
