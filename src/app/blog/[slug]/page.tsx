@@ -1,12 +1,16 @@
+// src/app/blog/[slug]/page.tsx
 import dynamic from "next/dynamic";
 
 interface BlogPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// ✅ Map slug values to the corresponding components
+// ✅ Add new blog components to the mapping
 const blogComponents: Record<string, React.ComponentType> = {
   "edtech-companies": dynamic(() => import("../../blogs/EdTechCompanies")),
+  "how-to-make-notes-for-upsc": dynamic(() => import("../how-to-make-notes-for-upsc/page")),
+  "starting-upsc-preparation": dynamic(() => import("../starting-upsc-preparation/page")),
+  "problems-faced-during-upsc-mains": dynamic(() => import("../problems-faced-during-upsc-mains/page")),
 };
 
 export default async function BlogPage({ params }: BlogPageProps) {

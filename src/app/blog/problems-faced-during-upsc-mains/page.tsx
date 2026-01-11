@@ -7,9 +7,9 @@ import Link from "next/link";
 import { List } from "lucide-react";
 import { api } from "~/trpc/react";
 import { useSession, signIn } from "next-auth/react";
-import ApplyNowForm from "../_components/ApplyNowForm";
 import { getLatestBlogs } from "~/data/blogMetadata";
-import LatestArticlesSidebar from "../_components/LatestArticlesSidebar";
+import ApplyNowForm from "~/app/_components/ApplyNowForm";
+import LatestArticlesSidebar from "~/app/_components/LatestArticlesSidebar";
 
 /* ----------------------------
  * Types
@@ -18,12 +18,12 @@ interface LatestArticle {
   id: number;
   title: string;
   thumbnail: string;
-  slug: string; // ADD slug
-  date: string; // CHANGE timeAgo to date
+  slug: string;
+  date: string;
 }
 
 const blog = {
-  title: "Top 10 EdTech Companies in India 2026: Leading in Quality Education & Digital Innovation",
+  title: "Problems Faced by Aspirants during UPSC CSE Mains Preparation",
   author: "Saumya Sarin",
   publishedAt: new Date("2025-01-05"),
   views: 9036
@@ -37,7 +37,7 @@ const BlogPage: FC = () => {
 
   // REPLACE: Get latest articles from metadata
   const latestArticles: LatestArticle[] = getLatestBlogs(3)
-    .filter(blog => blog.slug !== 'edtech-companies')
+    .filter(blog => blog.slug !== 'problems-faced-during-upsc-mains')
     .map(blog => ({
       id: blog.id,
       title: blog.title,
@@ -63,13 +63,13 @@ const BlogPage: FC = () => {
               Latest Articles
             </Link>{" "}
             &gt;{" "}
-            <span className="text-gray-700">Top 10 EdTech Companies...</span>
+            <span className="text-gray-700">Problems Faced by Aspirants during UPSC CSE Mains Preparation</span>
           </nav>
 
           {/* Title & Meta Info */}
           <header>
             <h1 className="text-3xl font-bold text-gray-900 leading-snug">
-              Top 10 EdTech Companies in India 2026: Leading in Quality Education & Digital Innovation
+               Problems Faced by Aspirants during UPSC CSE Mains Preparation
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mt-3">
               <span>By Saumya Sarin</span>
@@ -117,7 +117,7 @@ const BlogPage: FC = () => {
           {/* Featured Image */}
           <div className="rounded-lg overflow-hidden">
             <Image
-              src="/blogs/edtech-companies.jpg"
+              src="/blogs/problems-faced-during-upsc-mains.jpg"
               alt="Blog banner"
               width={800}
               height={400}
@@ -127,21 +127,34 @@ const BlogPage: FC = () => {
 
           {/* Blog Body */}
           <article className="prose max-w-none text-gray-800">
-            <p>
-              The EdTech market in India has witnessed stupendous growth in recent years,
-              bringing a paradigm shift in the way students consume education...
+            <p className="text-gray-700 mb-3">
+              On a general basis, we can categorize Students writing Mains in two broader categories - (a) Aspirants Writing Mains on a continuous basis but are not able to clear mains, (b) Students writing mains for the very first time. 
             </p>
-            <h2>Highlights</h2>
-            <ul>
-              <li>Motion Education</li>
-              <li>BYJU's</li>
-              <li>ALLEN Career Institute</li>
-              <li>Physics Wallah</li>
-              <li>Unacademy</li>
+            <p className="text-gray-700 mb-3">
+              <u>In this article, we are going to provide insight related to the preparation strategy for mains for both types of categories of students:</u>
+            </p>
+            <ul className="list-disc list-inside text-gray-800 mb-4 space-y-1">
+              <strong>First Timers</strong>
+              <li>
+                An aspirant in his/her first attempt faces major problems like how to start preparation, what is the booklist, what should be the approach to read NCERTs, how to read newspapers, how to make notes, etc. 
+              </li>
+              <strong>Veterans</strong>
+              <li>
+                Whereas, an aspirant in his/her second or third attempt faces problems like how to improve answer writing, how to make notes, what content should be referred for value-addition, etc. 
+              </li>
             </ul>
+            <h2>Highlights</h2>
+            <div className="rounded-lg overflow-hidden">
+                        <Image
+                          src="/blog-feature.jpg"
+                          alt="Blog banner"
+                          width={400}
+                          height={400}
+                          className="w-full object-cover"
+                        />
+                      </div>
           </article>
-
-          {/* Highlights Section */}
+           {/* Highlights Section */}
           <section className="border rounded-lg p-4 bg-gray-50">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Highlights</h2>
@@ -155,93 +168,88 @@ const BlogPage: FC = () => {
 
             {open && (
               <ol className="list-decimal list-inside mt-3 space-y-1 text-sm text-gray-700">
-                <li>List of Top 10 EdTech Companies in India</li>
-                <li>Motion Education</li>
-                <li>BYJU's</li>
-                <li>ALLEN Career Institute</li>
-                <li>Physics Wallah</li>
-                <li>Unacademy</li>
-                <li>Aakash</li>
-                <li>Vedantu</li>
-                <li>Simplilearn</li>
-                <li>Resonance</li>
-                <li>Extramarks</li>
-                <li className="ml-4">Conclusion</li>
-                <li className="ml-4">FAQs: Top 10 EdTech Companies in India</li>
-                <li className="ml-4">Comments</li>
+                <li>Problems Faced by Aspirants </li>
+                <li>1. Lack of information on subjects and topics </li>
+                <li>2. Lack of understanding of the exam</li>
+                <li>3. Lack of guidance for the correct sources</li>
+                <li>4. Lack of awareness of knowing the weightage</li>
+                <li>5. Lack of awareness of knowing the weightage</li>
+                <li>6. Lack of action plan for revision</li>
+                <li>7. Lack of knowledge in choosing an optional subject</li>
+                <li>Why Mentorship is Important?</li>
+                <li>Some Frequently Asked Questions:</li>
               </ol>
             )}
           </section>
 
-          {/* EdTech Companies Section */}
-          <section className="space-y-10 mt-8">
-            {/* 1. Motion Education */}
-            <div id="motion-education">
-              <h2 className="text-2xl font-bold mb-3">1. Motion Education</h2>
-              <ul className="list-disc list-inside text-gray-800 mb-4 space-y-1">
-                <li>
-                  <strong>Website:</strong>{" "}
-                  <a href="https://motion.ac.in" target="_blank" className="text-primary hover:underline">
-                    motion.ac.in
-                  </a>
-                </li>
-                <li>
-                  <strong>Headquarters:</strong> Kota, Rajasthan, India
-                </li>
-                <li>
-                  <strong>Established Year:</strong> 2007
-                </li>
-              </ul>
-              <p className="text-gray-700 mb-3">
-                One of the <strong>top edtech companies in India</strong>, Motion believes in providing
-                holistic learning solutions to students preparing for different competitive exams.
-                Synergizing <strong>advanced e-learning technologies</strong>, Motion focuses on providing
-                an <strong>in-depth and engaging learning experience</strong> with a deep-rooted dedication
-                to digital education in India.
-              </p>
-              <p className="text-gray-700 mb-3">
-                Some of the programs include – <em>Anushasan Course, Amrit Course</em>, and many others all
-                designed to provide a <strong>planned, interactive, and goal-driven education</strong> to
-                students. Moreover, through <strong>scholarship tests and lottery programs</strong>, Motion
-                provides financial support in terms of free <strong>courses, scholarships, and accommodation</strong> support.
-              </p>
-              <p className="text-gray-700 mb-3">
-                Motion uses <strong>advanced digital tools and AI-based learning modules</strong> to tailor
-                education for every individual to increase student performance and participation.
-              </p>
 
-              <h3 className="text-xl font-semibold mt-4 mb-2">Mission & Vision</h3>
-              <p className="text-gray-700">
-                Motion's Mission is to <strong>provide high-quality, accessible education to everyone</strong>,
-                empowering students from all backgrounds to succeed via{" "}
-                <strong>technology-based marketplace solutions</strong>. The company aims to create a
-                democratic learning space that encourages innovations{" "}
-                <strong>using digital techniques, complementing traditional learning methods</strong>.
-                Utilizing trends from the world of e-learning, Motion is regarded as one of the{" "}
-                <strong>top EdTech companies in India</strong>.
-              </p>
+          <section className="space-y-10 mt-8">
+            
+            <div>
+              <h2 className="text-2xl font-bold mb-3">Problems Faced by Aspirants: </h2>
+              <ul className="list-disc list-inside text-gray-800 mb-4 space-y-1">
+                <h3><strong>1. Lack of plan to cover the syllabus:</strong></h3>
+                <p className="text-gray-700 mb-3">
+                  The objective to cover the syllabus of the UPSC-CSE is to develop an understanding. After understanding an aspirant needs to learn to develop synergy between the static and current affairs. This was reflected in the PYQs of the UPSC. Students have their own constraints in terms of time and availability to understand the syllabus. Hence, a mentor helps students to evolve a plan to cover the syllabus. 
+                </p>
+                      <h3><strong>2. Lack of information on subjects and topics:</strong></h3>   
+                      <p className="text-gray-700 mb-3">
+                        As it is General Studies, whose questions are general; answers are general; hence, its preparation should also be general. However, the addition of day-to-day data or news makes it difficult for the aspirant to make sense of subjects and topics. Therefore, a mentor helps the students not just to understand but also to make 100% utilization of information on subjects and topics. 
+                      </p>
+                    <h3><strong>3. Lack of understanding of the exam:</strong></h3>  
+                    <p className="text-gray-700 mb-3">
+                      It is imperative to understand the approach of this examination. For example, UPSC in its examination wants an aspirant to make them understand his/her understanding of the topics/events. Hence, a mentor helps students to make their understanding more understandable i.e., you need to explain your understanding to UPSC.
+                    </p>
+                      <h3><strong>Lack of guidance for the correct sources:</strong></h3>  
+                      <p className="text-gray-700 mb-3">
+                        Many aspirants carry a wrong approach with respect to the sources they refer to. They lack the clarity and edge of the topics. For example, an aspirant considers the newspaper as a material that he/she is bound to read. Whereas, a mentor helps the student to read the newspaper as value-additive material. 
+                      </p>
+                    <h3><strong>Lack of awareness of knowing the weightage:</strong></h3> 
+                    <p className="text-gray-700 mb-3">
+                      Referring to PYQs helps students know the question pattern and weightage of the subjects. However, many aspirants refer PYQs as any other mock test. Therefore, a mentor helps the student to go through the PYQs with an appropriate approach to understand the demand of the UPSC and also the weightage and prepare accordingly. 
+                    </p>
+                    <h3><strong>Lack of action plan for revision:</strong></h3>
+                    <p className="text-gray-700 mb-3">
+                      Revision and recall are important aspects of this examination. Students majorly lack the approach to revising the vast syllabus of the UPSC in a timely manner. Hence, a mentor guides the student toward preparing an action plan for revising the important sources and topics.
+                    </p>
+                    <h3><strong>Lack of knowledge in choosing an optional subject:</strong></h3>
+                    <p className="text-gray-700 mb-3">
+                      Many of the unsuccessful aspirants take the wrong optional subject. As one pass or fails the Mains Examination based upon his/her optional subject. A mentor usually helps narrow down the decision-making towards choosing an optional subject.
+                    </p>
+              </ul>
             </div>
 
-            {/* 2. BYJU's */}
-            <div id="byjus">
-              <h2 className="text-2xl font-bold mb-3">2. BYJU's</h2>
+            
+            <div>
+              <h2 className="text-2xl font-bold mb-3">Why Mentorship is Important?</h2>
+             <p className="text-gray-700 mb-3">
+              A mentor helps the student to understand the approach required to clear this examination. Like, how to start, how to read the newspaper, how to make notes, how to improve answer writing, and how to understand the syllabus.
+            </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold mb-3">Some Frequently Asked Questions:</h2>
               <ul className="list-disc list-inside text-gray-800 mb-4 space-y-1">
+                <h3><strong>1. Should I Join Full fledged Course or a Crash Course type course with answer writing?</strong></h3>
                 <li>
-                  <strong>Website:</strong>{" "}
-                  <a href="https://byjus.com" target="_blank" className="text-primary hover:underline">
-                    byjus.com
-                  </a>
+                  UPSC-CSE requires timely guidance. Hence, it is imperative that a student should enroll in a full-fledged course. This will help students to improve their preparation strategy at every evolving step.
+                </li>
+                <h3><strong>2. Is it feasible to cover the Mains syllabus within 4 months?</strong></h3>
+                <li>
+                  With proper guidance from a mentor, one can cover the entire syllabus of the Mains Examination. This may include, answer writing practice, note-making, value-addition, understanding of the syllabus, and connectivity with the current events
+                </li>
+                <h3><strong>3. Should I join the test series?</strong></h3>
+                <li>
+                  Yes, the test series is an important part of this examination. The test series will help the student to improve their answer writing skills by considering the feedback of an Evaluator.
                 </li>
                 <li>
-                  <strong>Headquarters:</strong> Bengaluru, Karnataka, India
+                  The most appropriate advice will be to not think about result too much and think about the process rather than thinking all the time about result. As it is said that” think about the journey rather than destination”. By doing developing thought process like that you can develop a good habit of positive thinking, which can play a crucial role in defining your career.
                 </li>
+                <h3><strong>4. Should I revise my notes? </strong></h3>
                 <li>
-                  <strong>Established Year:</strong> 2011
+                  Revision and recall is one of the important features of this examination. One should revise his/her notes at regular intervals. 
                 </li>
               </ul>
-              <p className="text-gray-700">
-                [Add BYJU's description, programs, mission, vision, etc. here just like Motion Education...]
-              </p>
             </div>
           </section>
 
