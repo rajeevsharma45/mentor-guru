@@ -153,12 +153,16 @@ const BlogMainPage: FC = () => {
   
   // Get data from centralized metadata
   const featuredBlog = getFeaturedBlog();
-  const latestBlogs = getLatestBlogs().slice(1, 5); // Skip featured, get next 4
+  const allBlogs = getLatestBlogs();
+  
+  // Filter out the featured blog from latest articles
+  const latestBlogs = allBlogs.filter(blog => blog.id !== featuredBlog?.id);
 
   const handleBlogClick = (slug: string) => router.push(`/blog/${slug}`);
   const handleCategoryClick = (slug: string) => router.push(`/blog/category/${slug}`);
   const handleCourseClick = (slug: string) => router.push(`/courses/${slug}`);
 
+  
   return (
     <div className="max-container padding-container py-10 mt-10">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

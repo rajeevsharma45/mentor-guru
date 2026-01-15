@@ -1,7 +1,7 @@
 "use client";
 
 import type { FC, FormEvent } from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { List } from "lucide-react";
@@ -10,6 +10,11 @@ import { useSession, signIn } from "next-auth/react";
 import ApplyNowForm from "../_components/ApplyNowForm";
 import { getLatestBlogs } from "~/data/blogMetadata";
 import LatestArticlesSidebar from "../_components/LatestArticlesSidebar";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 /* ----------------------------
  * Types
@@ -18,8 +23,8 @@ interface LatestArticle {
   id: number;
   title: string;
   thumbnail: string;
-  slug: string; // ADD slug
-  date: string; // CHANGE timeAgo to date
+  slug: string;
+  date: string;
 }
 
 const blog = {
@@ -34,8 +39,112 @@ const blog = {
  * ---------------------------- */
 const BlogPage: FC = () => {
   const [open, setOpen] = useState(true);
+  
+  // Refs for animations
+  const breadcrumbRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const socialRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
+  const highlightsRef = useRef<HTMLElement>(null);
+  const companiesRef = useRef<HTMLElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
 
-  // REPLACE: Get latest articles from metadata
+  // GSAP Animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Breadcrumb fade in from top
+      gsap.from(breadcrumbRef.current, {
+        opacity: 0,
+        y: -20,
+        duration: 0.6,
+        ease: "power2.out"
+      });
+
+      // Header animation with stagger
+      gsap.from(headerRef.current?.children || [], {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        stagger: 0.2, 
+        ease: "power3.out",
+        delay: 0.2
+      });
+
+      // Social buttons animation
+      gsap.from(socialRef.current?.children || [], {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: "back.out(1.7)",
+        delay: 0.6
+      });
+
+      // Featured image reveal
+      gsap.from(imageRef.current, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 1,
+        ease: "power2.out",
+        delay: 0.8
+      });
+
+      // Article content fade in
+      gsap.from(articleRef.current, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: articleRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      // Highlights section
+      gsap.from(highlightsRef.current, {
+        opacity: 0,
+        x: -50,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: highlightsRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      // Company sections stagger
+      gsap.from(companiesRef.current?.children || [], {
+        opacity: 0,
+        y: 60,
+        duration: 0.8,
+        stagger: 0.3,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: companiesRef.current,
+          start: "top 70%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      // Sidebar animation
+      gsap.from(sidebarRef.current?.children || [], {
+        opacity: 0,
+        x: 50,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power2.out",
+        delay: 0.4
+      });
+
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   const latestArticles: LatestArticle[] = getLatestBlogs(3)
     .filter(blog => blog.slug !== 'edtech-companies')
     .map(blog => ({
@@ -49,17 +158,15 @@ const BlogPage: FC = () => {
   return (
     <div className="max-container padding-container py-10 mt-10">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* -------------------- */}
         {/* MAIN BLOG CONTENT */}
-        {/* -------------------- */}
         <main className="lg:col-span-2 space-y-6">
           {/* Breadcrumb */}
-          <nav className="text-sm text-gray-500">
-            <Link href="/" className="hover:text-primary">
+          <nav ref={breadcrumbRef} className="text-sm text-gray-500">
+            <Link href="/" className="hover:text-primary transition-colors">
               Home
             </Link>{" "}
             &gt;{" "}
-            <Link href="/blogs" className="hover:text-primary">
+            <Link href="/blogs" className="hover:text-primary transition-colors">
               Latest Articles
             </Link>{" "}
             &gt;{" "}
@@ -67,7 +174,7 @@ const BlogPage: FC = () => {
           </nav>
 
           {/* Title & Meta Info */}
-          <header>
+          <header ref={headerRef}>
             <h1 className="text-3xl font-bold text-gray-900 leading-snug">
               Top 10 EdTech Companies in India 2026: Leading in Quality Education & Digital Innovation
             </h1>
@@ -80,7 +187,7 @@ const BlogPage: FC = () => {
           </header>
 
           {/* Social Buttons */}
-          <div className="flex flex-wrap gap-2">
+          <div ref={socialRef} className="flex flex-wrap gap-2">
             {(() => {
               const url = typeof window !== "undefined" ? window.location.href : "";
               const title = blog.title;
@@ -106,7 +213,7 @@ const BlogPage: FC = () => {
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-2 bg-primary text-white rounded hover:bg-secondary transition text-sm"
+                  className="px-3 py-2 bg-primary text-white rounded hover:bg-secondary transition-all duration-300 hover:scale-105 text-sm"
                 >
                   Share {s.name}
                 </a>
@@ -115,18 +222,18 @@ const BlogPage: FC = () => {
           </div>
 
           {/* Featured Image */}
-          <div className="rounded-lg overflow-hidden">
+          <div ref={imageRef} className="rounded-lg overflow-hidden shadow-lg">
             <Image
               src="/blogs/edtech-companies.jpg"
               alt="Blog banner"
               width={800}
               height={400}
-              className="w-full object-cover"
+              className="w-full object-cover hover:scale-105 transition-transform duration-700"
             />
           </div>
 
           {/* Blog Body */}
-          <article className="prose max-w-none text-gray-800">
+          <article ref={articleRef} className="prose max-w-none text-gray-800">
             <p>
               The EdTech market in India has witnessed stupendous growth in recent years,
               bringing a paradigm shift in the way students consume education...
@@ -142,12 +249,12 @@ const BlogPage: FC = () => {
           </article>
 
           {/* Highlights Section */}
-          <section className="border rounded-lg p-4 bg-gray-50">
+          <section ref={highlightsRef} className="border rounded-lg p-4 bg-gray-50 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Highlights</h2>
               <button
                 onClick={() => setOpen(!open)}
-                className="p-1 border rounded hover:bg-gray-100"
+                className="p-1 border rounded hover:bg-gray-100 transition-all hover:rotate-180 duration-300"
               >
                 <List size={18} />
               </button>
@@ -155,28 +262,28 @@ const BlogPage: FC = () => {
 
             {open && (
               <ol className="list-decimal list-inside mt-3 space-y-1 text-sm text-gray-700">
-                <li>List of Top 10 EdTech Companies in India</li>
-                <li>Motion Education</li>
-                <li>BYJU's</li>
-                <li>ALLEN Career Institute</li>
-                <li>Physics Wallah</li>
-                <li>Unacademy</li>
-                <li>Aakash</li>
-                <li>Vedantu</li>
-                <li>Simplilearn</li>
-                <li>Resonance</li>
-                <li>Extramarks</li>
-                <li className="ml-4">Conclusion</li>
-                <li className="ml-4">FAQs: Top 10 EdTech Companies in India</li>
-                <li className="ml-4">Comments</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">List of Top 10 EdTech Companies in India</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Motion Education</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">BYJU's</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">ALLEN Career Institute</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Physics Wallah</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Unacademy</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Aakash</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Vedantu</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Simplilearn</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Resonance</li>
+                <li className="hover:text-primary transition-colors cursor-pointer">Extramarks</li>
+                <li className="ml-4 hover:text-primary transition-colors cursor-pointer">Conclusion</li>
+                <li className="ml-4 hover:text-primary transition-colors cursor-pointer">FAQs: Top 10 EdTech Companies in India</li>
+                <li className="ml-4 hover:text-primary transition-colors cursor-pointer">Comments</li>
               </ol>
             )}
           </section>
 
           {/* EdTech Companies Section */}
-          <section className="space-y-10 mt-8">
+          <section ref={companiesRef} className="space-y-10 mt-8">
             {/* 1. Motion Education */}
-            <div id="motion-education">
+            <div id="motion-education" className="border-l-4 border-primary pl-6 hover:border-secondary transition-colors duration-300">
               <h2 className="text-2xl font-bold mb-3">1. Motion Education</h2>
               <ul className="list-disc list-inside text-gray-800 mb-4 space-y-1">
                 <li>
@@ -223,7 +330,7 @@ const BlogPage: FC = () => {
             </div>
 
             {/* 2. BYJU's */}
-            <div id="byjus">
+            <div id="byjus" className="border-l-4 border-primary pl-6 hover:border-secondary transition-colors duration-300">
               <h2 className="text-2xl font-bold mb-3">2. BYJU's</h2>
               <ul className="list-disc list-inside text-gray-800 mb-4 space-y-1">
                 <li>
@@ -251,21 +358,17 @@ const BlogPage: FC = () => {
           </section>
         </main>
 
-        {/* -------------------- */}
         {/* SIDEBAR */}
-        {/* -------------------- */}
-        <aside className="space-y-6">
+        <aside ref={sidebarRef} className="space-y-6">
           <ApplyNowForm />
-          
-          {/* Latest Articles - UPDATED */}
           <LatestArticlesSidebar />
           
           {/* Ad Banner */}
-          <div className="border rounded-lg p-4 bg-orange-50 text-center">
+          <div className="border rounded-lg p-4 bg-orange-50 text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <h2 className="font-bold text-xl text-secondary">Amrit</h2>
             <p className="text-sm">A complete JEE/NEET online prep package</p>
             <p className="text-sm font-semibold mt-2">Starting from ₹2,500/-</p>
-            <button className="mt-3 px-4 py-2 bg-primary text-white rounded-md">
+            <button className="mt-3 px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition-all duration-300 hover:scale-105">
               Join Now
             </button>
           </div>
@@ -283,6 +386,7 @@ export default BlogPage;
 const CommentSection = ({ slug }: { slug: string }) => {
   const { data: session, status } = useSession();
   const [content, setContent] = useState("");
+  const commentsRef = useRef<HTMLDivElement>(null);
 
   const utils = api.useUtils();
   const { data: comments, isLoading } = api.comments.getBySlug.useQuery({ slug });
@@ -293,24 +397,39 @@ const CommentSection = ({ slug }: { slug: string }) => {
     },
   });
 
+  // Animate comments when they load
+  useEffect(() => {
+    if (comments && comments.length > 0) {
+      gsap.from(commentsRef.current?.children || [], {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: "power2.out"
+      });
+    }
+  }, [comments]);
+
   if (status === "loading" || isLoading) return <p>Loading comments...</p>;
 
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Comments</h2>
 
-      {comments?.length ? (
-        comments.map((c) => (
-          <div key={c.id} className="border rounded-md p-3 bg-gray-50">
-            <p className="text-sm text-gray-800">{c.content}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              {c.author?.name ?? "Anonymous"} • {new Date(c.createdAt).toLocaleString()}
-            </p>
-          </div>
-        ))
-      ) : (
-        <p className="text-sm text-gray-500">No comments yet. Be the first!</p>
-      )}
+      <div ref={commentsRef}>
+        {comments?.length ? (
+          comments.map((c) => (
+            <div key={c.id} className="border rounded-md p-3 bg-gray-50 mb-3 hover:shadow-md transition-shadow duration-300">
+              <p className="text-sm text-gray-800">{c.content}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                {c.author?.name ?? "Anonymous"} • {new Date(c.createdAt).toLocaleString()}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-sm text-gray-500">No comments yet. Be the first!</p>
+        )}
+      </div>
 
       {session ? (
         <form
@@ -325,12 +444,12 @@ const CommentSection = ({ slug }: { slug: string }) => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write your comment..."
-            className="w-full border px-3 py-2 rounded-md text-sm"
+            className="w-full border px-3 py-2 rounded-md text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
           <button
             type="submit"
             disabled={addComment.isPending}
-            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary transition"
+            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary transition-all duration-300 hover:scale-105 disabled:opacity-50"
           >
             {addComment.isPending ? "Posting..." : "Post Comment"}
           </button>
